@@ -1,12 +1,10 @@
 import math
 import pandas as pd
 from sodapy import Socrata
-import networkx as nx
 import matplotlib.pyplot as plt
-from networkx.algorithms.community.centrality import girvan_newman
-from mlxtend.frequent_patterns import apriori
-from mlxtend.preprocessing import TransactionEncoder
-import numpy as np
+import plotly.express as px
+import seaborn as sns
+
 
 client = Socrata("data.cityofnewyork.us", "ghD7sxmh9I7Ud8yq8Au5YKort", timeout=1000)
 
@@ -65,7 +63,16 @@ for i in range(265):  # row
 
 
 #orig_dest = [orig_dest[i][j] / tot[i] for i in range(265) for j in range(265)]
-for i in range(265):  # row
-    for j in range(265):  # col
-        if orig_dest[i][j] > 0:
-            print("From: " + str(i+1) + " to: " + str(j+1) + " with prob: " + str(orig_dest[i][j]))
+#for i in range(265):  # row
+#    for j in range(265):  # col
+#        if orig_dest[i][j] > 0:
+#            print("From: " + str(i+1) + " to: " + str(j+1) + " with prob: " + str(orig_dest[i][j]))
+# TODO origin that no rides exit from?
+
+data = pd.DataFrame(orig_dest)
+heatmap_plot = sns.heatmap(data, center=0, cmap='gist_ncar')
+#plt.show()
+# TODO other heatmap
+fig = px.imshow(orig_dest)
+fig.show()
+
