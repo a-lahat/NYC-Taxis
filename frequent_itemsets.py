@@ -16,6 +16,7 @@ start = 0  # Start at 0
 chunk_size = 2000  # Fetch 2000 rows at a time
 results = []  # Empty out our result list
 # TODO PU/DO-ID should be between 1 and 262?
+# TODO maybe just Manhattan?
 record_count = client.get("2upf-qytp",
                           where="trip_distance > 0 AND date_extract_y(tpep_pickup_datetime) = 2019 AND date_extract_y(tpep_dropoff_datetime) = 2019",
                           select="COUNT(*)")
