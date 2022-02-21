@@ -1,10 +1,9 @@
 import pandas as pd
 from sodapy import Socrata
 import json
-import math
 import plotly.express as px
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 
 client = Socrata("data.cityofnewyork.us", "ghD7sxmh9I7Ud8yq8Au5YKort", timeout=1000)
 # 263 rows
@@ -17,7 +16,7 @@ results = []  # Empty out our result list
 # record_count = client.get("2upf-qytp", where="trip_distance > 0 AND date_extract_y(tpep_pickup_datetime) = 2019 AND
 # date_extract_y(tpep_dropoff_datetime) = 2019", select="COUNT(*)") record_count = math.floor(int(record_count[0][
 # 'COUNT']))
-record_count = 50000  # TODO the total file has 83,645,528 rows
+record_count = 500000  # TODO the total file has 83,645,528 rows
 while True:
     # Fetch the set of records starting at 'start'
     results.extend(client.get("2upf-qytp",
@@ -25,8 +24,8 @@ while True:
                                     "date_extract_y(tpep_dropoff_datetime) = 2019 AND "
                                     "date_extract_dow(tpep_pickup_datetime) not between 1 and 3 AND "
                                     "date_extract_hh(tpep_pickup_datetime) not between 6 and 21",
-                              # select="PULocationID, date_extract_hh(tpep_pickup_datetime)",
-                              select="PULocationID, DOLocationID",
+                              select="PULocationID, date_extract_hh(tpep_pickup_datetime), "
+                                     "date_extract_m(tpep_pickup_datetime)",
                               offset=start, limit=chunk_size))
     # Move up the starting record
     start = start + chunk_size
@@ -36,6 +35,14 @@ while True:
 
 # Convert the list into a data frame
 df = pd.DataFrame.from_records(results)
+df.columns = ['PULocationID', 'hour', 'month']
+
+# Check that sample data is distributed along months/hours to be sufficient
+df_month = df.groupby(['month'], as_index=False).size()
+df_hour = df.groupby(['hour'], as_index=False).size()
+month_bar = df_month.plot.bar(title='Month')
+hour_bar = df_hour.plot.bar(title='Hour')
+plt.show()
 
 # Generate PU df
 df_PU = df.groupby(['PULocationID'], as_index=False).size()
