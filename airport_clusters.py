@@ -2,6 +2,7 @@ from sodapy import Socrata
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+import seaborn as sns
 
 client = Socrata("data.cityofnewyork.us", "ghD7sxmh9I7Ud8yq8Au5YKort", timeout=1000)
 airport_ids = client.get("755u-8jsi", where="zone='Newark Airport' OR zone='JFK Airport' OR zone='LaGuardia Airport'",
@@ -73,6 +74,27 @@ plt.xlabel('Trip Distance (miles)', fontsize=16)
 plt.xticks(fontsize=16)
 plt.ylabel('Trip Duration (minutes)', fontsize=16)
 plt.yticks(fontsize=16)
+
 plt.show()
+
+df['label'] = labels
+duration_40_to_60 = df.loc[(df['label']==1) & (df['trip_distance'] < 20) & (df['trip_distance'] > 15)]
+duration_20_to_40 = df.loc[(df['label']==2) & (df['trip_distance'] < 20) & (df['trip_distance'] > 15)]
+sns.distplot(duration_40_to_60['PU_time'].dt.hour)
+sns.distplot(duration_20_to_40['PU_time'].dt.hour)
+
+plt.figure(figsize=(22, 10))
+plotnum = 1
+for i in range(1, 3):
+    if plotnum <= 2:
+        #axs = plt.subplot(1, 2, plotnum)
+        sns.distplot(df.loc[(df['label'] == i) & (df['trip_distance'] < 20) & (df['trip_distance'] > 15)]['PU_time'].dt.hour)
+    plotnum += 1
+#plt.tight_layout()
+plt.xlabel('Pick-Up hour from Airport', fontsize=16)
+plt.xticks(fontsize=16)
+plt.ylabel('Density', fontsize=16)
+plt.yticks(fontsize=16)
+plt.savefig(fname='C:\\Users\\lahat\\Documents\\Uni\\Year3\\IntrotoDS\\final_project\\airport_distplots.png')
 
 
