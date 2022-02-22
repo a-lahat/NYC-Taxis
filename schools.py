@@ -1,10 +1,6 @@
 import pandas as pd
 from sodapy import Socrata
-import json
-import math
-import plotly.express as px
 import matplotlib.pyplot as plt
-import numpy as np
 
 client = Socrata("data.cityofnewyork.us", "ghD7sxmh9I7Ud8yq8Au5YKort", timeout=1000)
 map_results = client.get("755u-8jsi", where="borough='Manhattan'", select='borough, zone, location_id', limit=1000)
@@ -38,5 +34,5 @@ schools_by_zone = manhattan_schools.groupby(by=['NTA_NAME'], as_index=False)[
 print(schools_by_zone)
 
 ax = schools_by_zone.plot.bar(x=0, stacked=True)
-plt.show()
+#plt.show()
 
