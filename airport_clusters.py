@@ -11,7 +11,7 @@ airport_ids = pd.DataFrame.from_records(airport_ids)
 print(airport_ids)
 
 start = 0  # Start at 0
-chunk_size = 25  # Fetch 20 rows at each hour
+chunk_size = 25  # Fetch 25 rows at each hour
 results = []  # Empty out our result list
 
 for hour in range(0, 24):
@@ -83,18 +83,5 @@ duration_20_to_40 = df.loc[(df['label']==2) & (df['trip_distance'] < 20) & (df['
 sns.distplot(duration_40_to_60['PU_time'].dt.hour)
 sns.distplot(duration_20_to_40['PU_time'].dt.hour)
 
-plt.figure(figsize=(22, 10))
-plotnum = 1
-for i in range(1, 3):
-    if plotnum <= 2:
-        #axs = plt.subplot(1, 2, plotnum)
-        sns.distplot(df.loc[(df['label'] == i) & (df['trip_distance'] < 20) & (df['trip_distance'] > 15)]['PU_time'].dt.hour)
-    plotnum += 1
-#plt.tight_layout()
-plt.xlabel('Pick-Up hour from Airport', fontsize=16)
-plt.xticks(fontsize=16)
-plt.ylabel('Density', fontsize=16)
-plt.yticks(fontsize=16)
-plt.savefig(fname='C:\\Users\\lahat\\Documents\\Uni\\Year3\\IntrotoDS\\final_project\\airport_distplots.png')
-
+plt.show()
 
